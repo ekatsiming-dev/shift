@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- [改善 7] 更新 Title -->
-    <title>互動排班月曆 (v2.5 - 響應式改善)</title>
+    <!-- [改善 8] 更新 Title -->
+    <title>互動排班月曆 (v2.6 - 手機版重大修正)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
@@ -17,23 +17,20 @@
         .calendar-day.bg-white:hover {
             background-color: #f8fafc; /* bg-slate-50 */
             transition: background-color 0.2s ease-in-out;
-        }
-        /* [改善 7] 調整響應式斷點 */
-        @media (max-width: 768px) {
+            /* [改善 8] 再次微調手機版日曆表頭與標籤 */
             .calendar-day {
-                min-height: 90px; /* 調整高度 */
+                min-height: 90px; 
                 font-size: 0.875rem;
             }
             .shift-tag {
-                font-size: 0.75rem; /* 調整字體 */
+                font-size: 0.7rem; /* 再次縮小 */
                 padding: 0.25rem 0.375rem;
             }
-            /* [改善 7] 增加 week header 的 mobile padding */
             .weekday-header {
-                padding: 0.75rem 0.25rem; /* 減少水平 padding */
+                padding: 0.75rem 0.1rem; /* 減少 padding */
+                font-size: 0.7rem; /* 再次縮小 */
             }
         }
-        /* Modal 樣式 */
         .modal-backdrop {
             background-color: rgba(0, 0, 0, 0.5);
         }
@@ -46,11 +43,8 @@
 </head>
 <body class="bg-slate-50 text-slate-800 p-4 md:p-8">
     
-    <!-- [改善 7] 響應式斷點 lg -> md -->
     <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-8">
 
-        <!-- 控制面板 (v2.4 樣式) -->
-        <!-- [改善 7] 響應式斷點 lg:col-span-3 -> md:col-span-4 -->
         <div class="md:col-span-4">
             <div class="bg-white rounded-lg shadow-xl p-6 sticky top-8">
                 <h2 class="text-2xl font-extrabold text-slate-900 mb-6 tracking-tight">排班錨點設定</h2>
@@ -58,30 +52,30 @@
                 <form id="schedule-form" class="space-y-6">
                     
                     <fieldset class="space-y-3">
-                        <legend class="text-lg font-semibold text-indigo-700 mb-2">1. 班表起訖</legend>
+                        <legend class="text-lg font-semibold text-green-700 mb-2">1. 班表起訖</legend>
                         <div class="space-y-3">
                             <div>
                                 <label for="displayStartDate" class="block text-sm font-medium text-slate-700">起始月份</label>
-                                <input type="month" id="displayStartDate" value="2025-12" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm pl-3 pr-9 py-2">
+                                <input type="month" id="displayStartDate" value="2025-12" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-green-500 focus:ring-green-500 text-sm pl-3 pr-9 py-2">
                             </div>
                             <div>
                                 <label for="displayEndDate" class="block text-sm font-medium text-slate-700">結束月份</label>
-                                <input type="month" id="displayEndDate" value="2026-01" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm pl-3 pr-9 py-2">
+                                <input type="month" id="displayEndDate" value="2026-01" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-green-500 focus:ring-green-500 text-sm pl-3 pr-9 py-2">
                             </div>
                         </div>
                     </fieldset>
                     
                     <fieldset class="space-y-3">
-                        <legend class="text-lg font-semibold text-indigo-700 mb-2">2. 日曆選項</legend>
+                        <legend class="text-lg font-semibold text-green-700 mb-2">2. 日曆選項</legend>
                         <div class="space-y-2">
                             <span class="block text-sm font-medium text-slate-700">週首欄</span>
                             <div class="flex items-center gap-x-4">
                                 <div class="flex items-center">
-                                    <input id="startDaySun" name="startDayOfWeek" type="radio" value="0" checked class="h-4 w-4 border-slate-300 text-indigo-600 focus:ring-indigo-600">
+                                    <input id="startDaySun" name="startDayOfWeek" type="radio" value="0" checked class="h-4 w-4 border-slate-300 text-green-600 focus:ring-green-600">
                                     <label for="startDaySun" class="ml-2 block text-sm text-slate-900">週日 (預設)</label>
                                 </div>
                                 <div class="flex items-center">
-                                    <input id="startDayMon" name="startDayOfWeek" type="radio" value="1" class="h-4 w-4 border-slate-300 text-indigo-600 focus:ring-indigo-600">
+                                    <input id="startDayMon" name="startDayOfWeek" type="radio" value="1" class="h-4 w-4 border-slate-300 text-green-600 focus:ring-green-600">
                                     <label for="startDayMon" class="ml-2 block text-sm text-slate-900">週一</label>
                                 </div>
                             </div>
@@ -89,42 +83,41 @@
                     </fieldset>
 
                     <fieldset class="space-y-3">
-                        <legend class="text-lg font-semibold text-indigo-700 mb-2">3. 週一定錨</legend>
+                        <legend class="text-lg font-semibold text-green-700 mb-2">3. 週一定錨</legend>
                         <div>
-                            <label for="anchorWeekDate" class="block text-sm font-medium text-slate-700">任一<span class="font-semibold text-blue-700">週一</span>的日期</label>
-                            <input type="date" id="anchorWeekDate" value="2025-12-01" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-base p-2">
+                            <label for="anchorWeekDate" class="block text-sm font-medium text-slate-700">任一<span class="font-semibold text-teal-700">週一</span>的日期</label>
+                            <input type="date" id="anchorWeekDate" value="2025-12-01" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-green-500 focus:ring-green-500 text-base p-2">
                         </div>
                         <div>
-                            <label for="anchorWeekCode" class="block text-sm font-medium text-slate-700">該<span class="font-semibold text-blue-700">週一</span>的班別代號</label>
-                            <select id="anchorWeekCode" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-base p-2">
+                            <label for="anchorWeekCode" class="block text-sm font-medium text-slate-700">該<span class="font-semibold text-teal-700">週一</span>的班別代號</label>
+                            <select id="anchorWeekCode" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-green-500 focus:ring-green-500 text-base p-2">
                                 <!-- JS 動態填入 -->
                             </select>
                         </div>
                     </fieldset>
 
                     <fieldset class="space-y-3">
-                        <legend class="text-lg font-semibold text-indigo-700 mb-2">4. 週日錨點</legend>
+                        <legend class="text-lg font-semibold text-green-700 mb-2">4. 週日錨點</legend>
                         <div class="space-y-2">
                             <span class="block text-sm font-medium text-slate-700">選擇錨點班別</span>
                             <div class="flex items-center gap-x-4">
                                 <div class="flex items-center">
-                                    <input id="anchorSunMain" name="anchorSunType" type="radio" value="主8-12'" checked class="h-4 w-4 border-slate-300 text-indigo-600 focus:ring-indigo-600">
+                                    <input id="anchorSunMain" name="anchorSunType" type="radio" value="主8-12'" checked class="h-4 w-4 border-slate-300 text-green-600 focus:ring-green-600">
                                     <label for="anchorSunMain" class="ml-2 block text-sm text-slate-900">主8-12'</label>
                                 </div>
                                 <div class="flex items-center">
-                                    <input id="anchorSunAlt" name="anchorSunType" type="radio" value="$8-12'" class="h-4 w-4 border-slate-300 text-indigo-600 focus:ring-indigo-600">
+                                    <input id="anchorSunAlt" name="anchorSunType" type="radio" value="$8-12'" class="h-4 w-4 border-slate-300 text-green-600 focus:ring-green-600">
                                     <label for="anchorSunAlt" class="ml-2 block text-sm text-slate-900">$8-12'</label>
                                 </div>
                             </div>
                         </div>
                          <div>
                             <label for="anchorSunDate" class="block text-sm font-medium text-slate-700">錨點班別的日期 (需為週日)</label>
-                            <input type="date" id="anchorSunDate" value="2025-12-14" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-base p-2">
+                            <input type="date" id="anchorSunDate" value="2025-12-14" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-green-500 focus:ring-green-500 text-base p-2">
                         </div>
                     </fieldset>
 
-                    <!-- [改善 6] 為所有按鈕增加 transition 效果 -->
-                    <button type="submit" class="w-full bg-indigo-600 text-white font-semibold py-3 px-4 rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 text-base transition-all duration-200">
+                    <button type="submit" class="w-full bg-green-600 text-white font-semibold py-3 px-4 rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 text-base transition-all duration-200">
                         產生班表
                     </button>
                     
@@ -137,8 +130,6 @@
             </div>
         </div>
 
-        <!-- 月曆顯示區 -->
-        <!-- [改善 7] 響應式斷點 lg:col-span-9 -> md:col-span-8 -->
         <div class="md:col-span-8">
             <div id="calendar-container" class="space-y-8">
                 <!-- JS 動態填入 -->
@@ -161,7 +152,7 @@
                 <!-- Tabs -->
                 <div class="mb-4 border-b border-slate-200">
                     <nav class="-mb-px flex space-x-6" aria-label="Tabs">
-                        <button id="tab-mon-sat" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm text-indigo-600 border-indigo-500">
+                        <button id="tab-mon-sat" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm text-green-600 border-green-500">
                             週一至六規則 (12週循環)
                         </button>
                         <button id="tab-sun" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm text-slate-500 border-transparent hover:text-slate-700 hover:border-slate-300">
@@ -171,8 +162,10 @@
                 </div>
                 
                 <!-- Tab Content: Mon-Sat -->
-                <div id="tab-content-mon-sat">
-                    <div id="mon-sat-editor" class="text-sm">
+                <!-- [改善 8] 增加一個 wrapper 讓表格可以水平捲動 -->
+                <div id="tab-content-mon-sat" class="overflow-x-auto">
+                    <!-- [改善 8] 增加 min-width 確保表格在小螢幕上也能正常滾動 -->
+                    <div id="mon-sat-editor" class="text-sm" style="min-width: 600px;">
                         <!-- JS 動態填入 -->
                     </div>
                 </div>
@@ -190,7 +183,7 @@
                 <button id="reset-rules-btn" type="button" class="bg-red-600 text-white font-semibold py-2 px-4 rounded-md shadow-sm hover:bg-red-700 transition-all duration-200">
                     重設為預設值
                 </button>
-                <button id="save-rules-btn" type="button" class="bg-indigo-600 text-white font-semibold py-3 px-4 rounded-md shadow-sm hover:bg-indigo-700 transition-all duration-200">
+                <button id="save-rules-btn" type="button" class="bg-green-600 text-white font-semibold py-3 px-4 rounded-md shadow-sm hover:bg-green-700 transition-all duration-200">
                     儲存規則
                 </button>
             </div>
@@ -566,7 +559,7 @@
             let optionsHtml = ALL_SHIFTS.map(shift => 
                 `<option value="${shift}" ${shift === selectedValue ? 'selected' : ''}>${shift}</option>`
             ).join('');
-            return `<select id="${id}" class="w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm p-1">
+            return `<select id="${id}" class="w-full rounded-md border-slate-300 shadow-sm focus:border-green-500 focus:ring-green-500 text-sm p-1">
                         ${optionsHtml}
                     </select>`;
         }
@@ -575,12 +568,13 @@
             // 填充週一至六
             let monSatHtml = `
                 <div class="grid grid-cols-[auto_repeat(6,1fr)] gap-x-2 items-center font-semibold mb-2 text-sm text-center sticky top-0 bg-white py-2">
-                    <div>代號</div><div>一</div><div>二</div><div>三</div><div>四</div><div>五</div><div>六</div>
+                    <!-- [改善 8] 調整標題 padding -->
+                    <div class="px-1">代號</div><div class="px-1">一</div><div class="px-1">二</div><div class="px-1">三</div><div class="px-1">四</div><div class="px-1">五</div><div class="px-1">六</div>
                 </div>`;
             MON_SAT_CYCLE.forEach(ruleCode => {
                 const rule = currentMonSatRules[ruleCode];
                 monSatHtml += `<div class="grid grid-cols-[auto_repeat(6,1fr)] gap-x-2 gap-y-2 items-center mb-2">`;
-                monSatHtml += `<div class="font-bold text-center text-indigo-700">${ruleCode}</div>`; // Rule Code
+                monSatHtml += `<div class="font-bold text-center text-green-700">${ruleCode}</div>`; // Rule Code
                 for (let i = 0; i < 6; i++) {
                     const shift = rule[i];
                     monSatHtml += `<div>${createShiftSelect(`ms-${ruleCode}-${i}`, shift)}</div>`;
@@ -593,7 +587,7 @@
             let sunHtml = `<div class="grid grid-cols-3 gap-x-4 gap-y-3 items-center max-w-sm mx-auto">`;
             SUN_CYCLE.forEach(ruleCode => {
                 const shift = currentSunRules[ruleCode];
-                sunHtml += `<div class="font-bold text-sm text-indigo-700">${ruleCode}</div>`;
+                sunHtml += `<div class="font-bold text-sm text-green-700">${ruleCode}</div>`;
                 sunHtml += `<div class="col-span-2">${createShiftSelect(`sun-${ruleCode}`, shift)}</div>`;
             });
             sunHtml += `</div>`;
@@ -633,18 +627,18 @@
             tabMonSat.addEventListener('click', () => {
                 tabContentMonSat.classList.remove('hidden');
                 tabContentSun.classList.add('hidden');
-                tabMonSat.classList.add('text-indigo-600', 'border-indigo-500');
+                tabMonSat.classList.add('text-green-600', 'border-green-500');
                 tabMonSat.classList.remove('text-slate-500', 'border-transparent', 'hover:text-slate-700', 'hover:border-slate-300');
                 tabSun.classList.add('text-slate-500', 'border-transparent', 'hover:text-slate-700', 'hover:border-slate-300');
-                tabSun.classList.remove('text-indigo-600', 'border-indigo-500');
+                tabSun.classList.remove('text-green-600', 'border-green-500');
             });
             tabSun.addEventListener('click', () => {
                 tabContentSun.classList.remove('hidden');
                 tabContentMonSat.classList.add('hidden');
-                tabSun.classList.add('text-indigo-600', 'border-indigo-500');
+                tabSun.classList.add('text-green-600', 'border-green-500');
                 tabSun.classList.remove('text-slate-500', 'border-transparent', 'hover:text-slate-700', 'hover:border-slate-300');
                 tabMonSat.classList.add('text-slate-500', 'border-transparent', 'hover:text-slate-700', 'hover:border-slate-300');
-                tabMonSat.classList.remove('text-indigo-600', 'border-indigo-500');
+                tabMonSat.classList.remove('text-green-600', 'border-green-500');
             });
         }
 
