@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>互動排班月曆 (v2)</title>
+    <title>互動排班月曆 (v2.1)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
@@ -29,7 +29,7 @@
     
     <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
 
-        <!-- 控制面板 (v2 樣式) -->
+        <!-- 控制面板 (v2.1 樣式) -->
         <div class="lg:col-span-3">
             <div class="bg-white rounded-lg shadow-lg p-6 sticky top-8">
                 <h2 class="text-2xl font-bold text-slate-900 mb-6">排班錨點設定</h2>
@@ -41,17 +41,32 @@
                         <div class="grid grid-cols-2 gap-3">
                             <div>
                                 <label for="displayStartDate" class="block text-sm font-medium text-slate-700">起始月份</label>
-                                <input type="month" id="displayStartDate" value="2025-12" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-base p-2">
+                                <!-- [改善 2] 調整 padding (p-2 -> pl-3 pr-9 py-2) 避免文字被圖示遮擋 -->
+                                <input type="month" id="displayStartDate" value="2025-12" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-base pl-3 pr-9 py-2">
                             </div>
                             <div>
                                 <label for="displayEndDate" class="block text-sm font-medium text-slate-700">結束月份</label>
-                                <input type="month" id="displayEndDate" value="2026-01" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-base p-2">
+                                <!-- [改善 2] 調整 padding (p-2 -> pl-3 pr-9 py-2) 避免文字被圖示遮擋 -->
+                                <input type="month" id="displayEndDate" value="2026-01" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-base pl-3 pr-9 py-2">
                             </div>
                         </div>
                     </fieldset>
-
+                    
+                    <!-- [改善 1] 新增週首欄選項 -->
                     <fieldset class="space-y-3">
-                        <legend class="text-lg font-semibold text-indigo-700 mb-2">2. 週一至週六錨點</legend>
+                        <legend class="text-lg font-semibold text-indigo-700 mb-2">2. 日曆選項</legend>
+                        <div>
+                            <label for="startDayOfWeek" class="block text-sm font-medium text-slate-700">週首欄</label>
+                            <select id="startDayOfWeek" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-base p-2">
+                                <option value="0" selected>週日 (預設)</option>
+                                <option value="1">週一</option>
+                            </select>
+                        </div>
+                    </fieldset>
+
+                    <!-- [改善 1] 調整編號 2 -> 3 -->
+                    <fieldset class="space-y-3">
+                        <legend class="text-lg font-semibold text-indigo-700 mb-2">3. 週一至週六錨點</legend>
                         <div>
                             <label for="anchorWeekDate" class="block text-sm font-medium text-slate-700">任一週一的日期</label>
                             <input type="date" id="anchorWeekDate" value="2025-12-01" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-base p-2">
@@ -64,8 +79,9 @@
                         </div>
                     </fieldset>
 
+                    <!-- [改善 1] 調整編號 3 -> 4 -->
                     <fieldset class="space-y-3">
-                        <legend class="text-lg font-semibold text-indigo-700 mb-2">3. 週日錨點</legend>
+                        <legend class="text-lg font-semibold text-indigo-700 mb-2">4. 週日錨點</legend>
                         <div>
                             <label for="anchorSunType" class="block text-sm font-medium text-slate-700">選擇錨點班別</label>
                             <select id="anchorSunType" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-base p-2">
@@ -111,7 +127,7 @@
             'I': { 0: '8-5', 1: '8-5', 2: '1-9', 3: '8-5', 4: '8-5', 5: 'OFF' },
             'J': { 0: '8-5', 1: '8-5', 2: '8-5', 3: '8-5', 4: 'OFF', 5: '8-5' },
             'K': { 0: '8-5', 1: '8-5', 2: '8-5', 3: '1-9', 4: '8-5', 5: 'OFF' },
-            'L': { 0: '8-5', 1: '8-5', 2: 'OFF', 3: '8-5', 4: '1-9', 5: '8-12' } // 規則已根據您的圖片修正 (週三 OFF, 週六 8-12)
+            'L': { 0: '8-5', 1: '8-5', 2: 'OFF', 3: '8-5', 4: '1-9', 5: '8-12' }
         };
         const MON_SAT_CYCLE = ['A', 'B', 'C', 'D', 'E', 'G', 'F', 'H', 'I', 'J', 'K', 'L'];
 
@@ -128,16 +144,20 @@
             '1-9': 'bg-blue-100 text-blue-800',
             '8-1': 'bg-emerald-100 text-emerald-800',
             '8-5': 'bg-amber-100 text-amber-800',
-            '8-5$': 'bg-amber-200 text-amber-900 font-semibold', // 8-5 變體
+            '8-5$': 'bg-amber-200 text-amber-900 font-semibold',
             '8-12': 'bg-violet-100 text-violet-800',
             "主8-12'": 'bg-red-100 text-red-800 font-bold',
             "$8-12'": 'bg-pink-100 text-pink-800 font-bold',
-            'default': 'bg-gray-100 text-gray-900' // 預防錯誤
+            'default': 'bg-gray-100 text-gray-900'
         };
 
         const MS_PER_DAY = 1000 * 60 * 60 * 24;
         const MS_PER_WEEK = MS_PER_DAY * 7;
-        const WEEKDAY_NAMES = ['日', '一', '二', '三', '四', '五', '六'];
+        
+        // [改善 1] 定義兩種週標題
+        const WEEKDAY_NAMES_SUN = ['日', '一', '二', '三', '四', '五', '六'];
+        const WEEKDAY_NAMES_MON = ['一', '二', '三', '四', '五', '六', '日'];
+
 
         // --- DOM 元素 ---
         const form = document.getElementById('schedule-form');
@@ -146,7 +166,6 @@
         
         // --- 核心排班邏輯 (週一至六不變) ---
         function getMonSatShift(targetDate, params) {
-            // ... (此函數與 v1 完全相同) ...
             const dayOfWeek = targetDate.getDay();
             if (dayOfWeek === 0) return { shift: 'N/A', rule: 'N/A' };
             const dayDiffFromMon = (dayOfWeek === 0) ? 6 : (dayOfWeek - 1);
@@ -165,58 +184,61 @@
         }
 
         /**
-         * 取得指定日期的週日班別 (v2 更新)
-         * @param {Date} targetDate - 目標日期 (必須是週日)
-         * @param {object} params - 錨點參數
-         * @returns {{shift: string, rule: string}}
+         * 取得指定日期的週日班別 (v2 不變)
          */
         function getSundayShift(targetDate, params) {
             if (targetDate.getDay() !== 0) return { shift: 'N/A', rule: 'N/A' };
-
-            // v2: 根據新的表單欄位讀取錨點
             let sunAnchorDate = new Date(params.anchorSunDate);
-            let sunAnchorRuleName = params.anchorSunType; // "主8-12'" 或 "$8-12'"
-            
+            let sunAnchorRuleName = params.anchorSunType; 
             sunAnchorDate.setHours(0, 0, 0, 0);
             targetDate.setHours(0, 0, 0, 0);
-
             const anchorRuleCode = Object.keys(SUN_RULES).find(key => SUN_RULES[key] === sunAnchorRuleName);
             if (!anchorRuleCode) return { shift: '錨點錯誤', rule: '錯誤' };
-            
             const anchorIndex = SUN_CYCLE.indexOf(anchorRuleCode);
             if (anchorIndex === -1) return { shift: '循環錯誤', rule: '錯誤' };
-
             const weeksDiff = Math.round((targetDate.getTime() - sunAnchorDate.getTime()) / MS_PER_WEEK);
             const cycleIndex = (anchorIndex + weeksDiff % 14 + 14) % 14;
             const currentRuleCode = SUN_CYCLE[cycleIndex];
             const shift = SUN_RULES[currentRuleCode];
-
             return { shift: shift, rule: currentRuleCode };
         }
 
         /**
-         * 繪製指定月份的月曆 (v2 更新)
+         * 繪製指定月份的月曆 (v2.1 更新)
          * @param {number} year - 年份
          * @param {number} month - 月份 (0-11)
-         * @param {object} params - 錨點參數
+         * @param {object} params - 錨點參數 (包含 startDay)
          */
         function renderMonth(year, month, params) {
             const monthName = new Date(year, month).toLocaleString('zh-TW', { month: 'long', year: 'numeric' });
             
+            // [改善 1] 根據 params.startDay 決定使用哪個標題陣列
+            const startDay = parseInt(params.startDay, 10) || 0; // 0 = 週日, 1 = 週一
+            const WEEKDAY_NAMES = (startDay === 1) ? WEEKDAY_NAMES_MON : WEEKDAY_NAMES_SUN;
+
             let monthHtml = `
                 <div class="bg-white rounded-lg shadow-lg overflow-hidden">
                     <h2 class="text-xl font-bold text-slate-900 p-4 bg-slate-50 border-b border-slate-200">${monthName}</h2>
                     <div class="grid grid-cols-7 border-b border-slate-200">
             `;
             
+            // [改善 1] 動態產生表頭，並正確標紅週日
             WEEKDAY_NAMES.forEach((day, index) => {
-                monthHtml += `<div class="p-2 text-center text-sm font-semibold text-slate-600 ${index === 0 ? 'text-red-500' : ''}">${day}</div>`;
+                // 檢查是否為週日 (無論在哪個位置)
+                const isSunHeader = (startDay === 0 && index === 0) || (startDay === 1 && index === 6);
+                monthHtml += `<div class="p-2 text-center text-sm font-semibold text-slate-600 ${isSunHeader ? 'text-red-500' : ''}">${day}</div>`;
             });
             monthHtml += `</div><div class="grid grid-cols-7">`;
 
             const firstDay = new Date(year, month, 1);
             const lastDay = new Date(year, month + 1, 0);
-            const firstDayOfWeek = firstDay.getDay();
+            
+            // [改善 1] 計算第一天之前的留白
+            let firstDayOfWeek = firstDay.getDay(); // 0=Sun, 1=Mon...
+            if (startDay === 1) {
+                // 如果首欄是週一, 0(Sun) 應排到 6, 1(Mon) 應排到 0
+                firstDayOfWeek = (firstDayOfWeek === 0) ? 6 : firstDayOfWeek - 1;
+            }
             
             for (let i = 0; i < firstDayOfWeek; i++) {
                 monthHtml += `<div class="calendar-day bg-slate-50 border-r border-b border-slate-200"></div>`;
@@ -233,13 +255,11 @@
                     result = getMonSatShift(currentDate, params);
                 }
 
-                // v2: 班別顏色邏輯
                 const isSun = dayOfWeek === 0;
                 const colorClass = SHIFT_COLORS[result.shift] || SHIFT_COLORS['default'];
                 
                 let dayClass = 'calendar-day relative p-2 border-r border-b border-slate-200 flex flex-col';
                 let dateClass = 'font-semibold';
-                // v2: shift-tag 樣式
                 let shiftClass = `shift-tag mt-1 rounded-md px-2 py-1 text-sm md:text-base flex-grow flex items-center justify-center ${colorClass}`;
 
                 if (isSun) {
@@ -250,7 +270,9 @@
                     dateClass += ' text-slate-800';
                 }
 
-                if (dayOfWeek === 6) {
+                // [改善 1] 判斷是否為網格的 "最後一欄" (週六或週日)
+                const isLastCol = (startDay === 1) ? (dayOfWeek === 0) : (dayOfWeek === 6);
+                if (isLastCol) {
                     dayClass = dayClass.replace('border-r', '');
                 }
 
@@ -262,11 +284,16 @@
                 `;
             }
 
-            const lastDayOfWeek = lastDay.getDay();
+            // [改善 1] 計算最後一天之後的留白
+            let lastDayOfWeek = lastDay.getDay();
+            if (startDay === 1) {
+                lastDayOfWeek = (lastDayOfWeek === 0) ? 6 : lastDayOfWeek - 1;
+            }
+
             if (lastDayOfWeek !== 6) {
                 for (let i = lastDayOfWeek + 1; i <= 6; i++) {
                     let padClass = "calendar-day bg-slate-50 border-r border-b border-slate-200";
-                    if (i === 6) padClass = padClass.replace('border-r', '');
+                    if (i === 6) padClass = padClass.replace('border-r', ''); // 最後一格(i=6)不加右框
                     monthHtml += `<div class="${padClass}"></div>`;
                 }
             }
@@ -276,9 +303,7 @@
         }
 
         /**
-         * 驗證輸入參數 (v2 更新)
-         * @param {object} params
-         * @returns {string|null} - Error message or null if valid
+         * 驗證輸入參數 (v2.1 不變)
          */
         function validateParams(params) {
             if (params.anchorWeekDate && new Date(params.anchorWeekDate).getDay() !== 1) {
@@ -300,19 +325,20 @@
         }
 
         /**
-         * 處理表單提交，產生班表 (v2 更新)
+         * 處理表單提交，產生班表 (v2.1 更新)
          */
         function generateScheduleFromForm(e) {
             if (e) e.preventDefault();
             
-            // v2: 讀取新的表單欄位
+            // [改善 1] 讀取新的 startDayOfWeek 欄位
             const params = {
                 displayStartDate: new Date(document.getElementById('displayStartDate').value + '-01T00:00:00'),
                 displayEndDate: new Date(document.getElementById('displayEndDate').value + '-01T00:00:00'),
                 anchorWeekDate: document.getElementById('anchorWeekDate').value,
                 anchorWeekCode: document.getElementById('anchorWeekCode').value,
                 anchorSunType: document.getElementById('anchorSunType').value,
-                anchorSunDate: document.getElementById('anchorSunDate').value
+                anchorSunDate: document.getElementById('anchorSunDate').value,
+                startDay: document.getElementById('startDayOfWeek').value // 新增
             };
 
             params.displayEndDate.setMonth(params.displayEndDate.getMonth() + 1);
@@ -362,5 +388,3 @@
     </script>
 </body>
 </html>
-
-
