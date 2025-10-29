@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>互動排班月曆 (v2.3 - 含儲存功能)</title>
+    <!-- [改善 7] 更新 Title -->
+    <title>互動排班月曆 (v2.5 - 響應式改善)</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Inter', 'Noto Sans TC', sans-serif;
@@ -13,14 +14,23 @@
         .calendar-day {
             min-height: 110px; /* 增加最小高度以容納標籤 */
         }
+        .calendar-day.bg-white:hover {
+            background-color: #f8fafc; /* bg-slate-50 */
+            transition: background-color 0.2s ease-in-out;
+        }
+        /* [改善 7] 調整響應式斷點 */
         @media (max-width: 768px) {
             .calendar-day {
-                min-height: 80px;
+                min-height: 90px; /* 調整高度 */
                 font-size: 0.875rem;
             }
             .shift-tag {
-                font-size: 0.8rem;
+                font-size: 0.75rem; /* 調整字體 */
                 padding: 0.25rem 0.375rem;
+            }
+            /* [改善 7] 增加 week header 的 mobile padding */
+            .weekday-header {
+                padding: 0.75rem 0.25rem; /* 減少水平 padding */
             }
         }
         /* Modal 樣式 */
@@ -29,36 +39,33 @@
         }
         .modal-content {
             max-height: 80vh; /* 限制 modal 高度 */
-            /* [改善] 確保 modal-content 使用 flex 佈局來固定頁尾 */
             display: flex;
             flex-direction: column;
         }
     </style>
 </head>
-<body class="bg-slate-100 text-slate-800 p-4 md:p-8">
+<body class="bg-slate-50 text-slate-800 p-4 md:p-8">
     
-    <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
+    <!-- [改善 7] 響應式斷點 lg -> md -->
+    <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-8">
 
-        <!-- 控制面板 (v2.3 樣式) -->
-        <div class="lg:col-span-3">
-            <div class="bg-white rounded-lg shadow-lg p-6 sticky top-8">
-                <h2 class="text-2xl font-bold text-slate-900 mb-6">排班錨點設定</h2>
+        <!-- 控制面板 (v2.4 樣式) -->
+        <!-- [改善 7] 響應式斷點 lg:col-span-3 -> md:col-span-4 -->
+        <div class="md:col-span-4">
+            <div class="bg-white rounded-lg shadow-xl p-6 sticky top-8">
+                <h2 class="text-2xl font-extrabold text-slate-900 mb-6 tracking-tight">排班錨點設定</h2>
                 
                 <form id="schedule-form" class="space-y-6">
                     
                     <fieldset class="space-y-3">
-                        <!-- [改善] 標題變更 -->
                         <legend class="text-lg font-semibold text-indigo-700 mb-2">1. 班表起訖</legend>
-                        <!-- [改善] 從 grid-cols-2 改為 space-y-3 讓欄位垂直排列 -->
                         <div class="space-y-3">
                             <div>
                                 <label for="displayStartDate" class="block text-sm font-medium text-slate-700">起始月份</label>
-                                <!-- [改善] 將 text-base 改為 text-sm 讓文字有足夠空間顯示 -->
                                 <input type="month" id="displayStartDate" value="2025-12" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm pl-3 pr-9 py-2">
                             </div>
                             <div>
                                 <label for="displayEndDate" class="block text-sm font-medium text-slate-700">結束月份</label>
-                                <!-- [改善] 將 text-base 改為 text-sm 讓文字有足夠空間顯示 -->
                                 <input type="month" id="displayEndDate" value="2026-01" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm pl-3 pr-9 py-2">
                             </div>
                         </div>
@@ -82,15 +89,12 @@
                     </fieldset>
 
                     <fieldset class="space-y-3">
-                        <!-- [改善] 標題變更 -->
                         <legend class="text-lg font-semibold text-indigo-700 mb-2">3. 週一定錨</legend>
                         <div>
-                             <!-- [改善 3] "週一" 變色 (indigo -> blue) -->
                             <label for="anchorWeekDate" class="block text-sm font-medium text-slate-700">任一<span class="font-semibold text-blue-700">週一</span>的日期</label>
                             <input type="date" id="anchorWeekDate" value="2025-12-01" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-base p-2">
                         </div>
                         <div>
-                             <!-- [改善 3] "週一" 變色 (indigo -> blue) -->
                             <label for="anchorWeekCode" class="block text-sm font-medium text-slate-700">該<span class="font-semibold text-blue-700">週一</span>的班別代號</label>
                             <select id="anchorWeekCode" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-base p-2">
                                 <!-- JS 動態填入 -->
@@ -119,19 +123,14 @@
                         </div>
                     </fieldset>
 
-                    <button type="submit" class="w-full bg-indigo-600 text-white font-semibold py-3 px-4 rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 text-base">
+                    <!-- [改善 6] 為所有按鈕增加 transition 效果 -->
+                    <button type="submit" class="w-full bg-indigo-600 text-white font-semibold py-3 px-4 rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 text-base transition-all duration-200">
                         產生班表
                     </button>
                     
-                    <!-- [改善 4] 新增規則編輯器按鈕 -->
-                    <button type="button" id="rule-editor-btn" class="w-full bg-slate-600 text-white font-semibold py-3 px-4 rounded-md shadow-sm hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 text-base mt-4">
+                    <button type="button" id="rule-editor-btn" class="w-full bg-slate-600 text-white font-semibold py-3 px-4 rounded-md shadow-sm hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 text-base mt-4 transition-all duration-200">
                         編輯班別規則
                     </button>
-                    
-                    <!-- [修正] 移除 "重設錨點設定" 按鈕 -->
-                    <!-- <button type="button" id="reset-settings-btn" class="w-full bg-white text-slate-700 border border-slate-300 font-semibold py-3 px-4 rounded-md shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 text-base mt-4">
-                        重設錨點設定
-                    </button> -->
 
                     <div id="error-message" class="text-sm text-red-600 font-medium hidden"></div>
                 </form>
@@ -139,7 +138,8 @@
         </div>
 
         <!-- 月曆顯示區 -->
-        <div class="lg:col-span-9">
+        <!-- [改善 7] 響應式斷點 lg:col-span-9 -> md:col-span-8 -->
+        <div class="md:col-span-8">
             <div id="calendar-container" class="space-y-8">
                 <!-- JS 動態填入 -->
             </div>
@@ -147,9 +147,8 @@
 
     </div>
 
-    <!-- [改善 4] 規則編輯器 Modal -->
+    <!-- 規則編輯器 Modal -->
     <div id="rule-editor-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden modal-backdrop">
-        <!-- [改善] 移除 overflow-hidden，改由 modal-content 的 flex 佈局控制 -->
         <div class="modal-content bg-white rounded-lg shadow-xl w-full max-w-3xl">
             <!-- Modal Header -->
             <div class="flex justify-between items-center p-4 border-b border-slate-200">
@@ -158,11 +157,9 @@
             </div>
             
             <!-- Modal Body -->
-            <!-- [改善] 新增 flex-grow 讓此區塊填滿可用空間，並獨立滾動 -->
             <div class="p-6 overflow-y-auto flex-grow">
                 <!-- Tabs -->
                 <div class="mb-4 border-b border-slate-200">
-                    <!-- [改善 1] 縮小頁籤間距 space-x-8 -> space-x-6 -->
                     <nav class="-mb-px flex space-x-6" aria-label="Tabs">
                         <button id="tab-mon-sat" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm text-indigo-600 border-indigo-500">
                             週一至六規則 (12週循環)
@@ -190,17 +187,17 @@
             
             <!-- Modal Footer -->
             <div class="flex justify-end items-center p-4 bg-slate-50 border-t border-slate-200 space-x-3">
-                <button id="reset-rules-btn" type="button" class="bg-red-600 text-white font-semibold py-2 px-4 rounded-md shadow-sm hover:bg-red-700">
+                <button id="reset-rules-btn" type="button" class="bg-red-600 text-white font-semibold py-2 px-4 rounded-md shadow-sm hover:bg-red-700 transition-all duration-200">
                     重設為預設值
                 </button>
-                <button id="save-rules-btn" type="button" class="bg-indigo-600 text-white font-semibold py-3 px-4 rounded-md shadow-sm hover:bg-indigo-700">
+                <button id="save-rules-btn" type="button" class="bg-indigo-600 text-white font-semibold py-3 px-4 rounded-md shadow-sm hover:bg-indigo-700 transition-all duration-200">
                     儲存規則
                 </button>
             </div>
         </div>
     </div>
     
-    <!-- [改善 4] 重設確認 Modal -->
+    <!-- 重設確認 Modal -->
     <div id="reset-confirm-modal" class="fixed inset-0 z-60 flex items-center justify-center p-4 hidden modal-backdrop">
          <div class="bg-white rounded-lg shadow-xl w-full max-w-sm">
              <div class="p-6">
@@ -210,10 +207,10 @@
                 </p>
              </div>
              <div class="flex justify-end p-4 bg-slate-50 space-x-3">
-                <button id="cancel-reset-btn" type="button" class="bg-white text-slate-700 border border-slate-300 font-semibold py-2 px-4 rounded-md shadow-sm hover:bg-slate-50">
+                <button id="cancel-reset-btn" type="button" class="bg-white text-slate-700 border border-slate-300 font-semibold py-2 px-4 rounded-md shadow-sm hover:bg-slate-50 transition-all duration-200">
                     取消
                 </button>
-                <button id="confirm-reset-btn" type="button" class="bg-red-600 text-white font-semibold py-2 px-4 rounded-md shadow-sm hover:bg-red-700">
+                <button id="confirm-reset-btn" type="button" class="bg-red-600 text-white font-semibold py-2 px-4 rounded-md shadow-sm hover:bg-red-700 transition-all duration-200">
                     確定重設
                 </button>
              </div>
@@ -250,7 +247,6 @@
         };
         const SUN_CYCLE = ['日1', '日2', '日3', '日4', '日5', '日6', '日7', '日8', '日9', '日10', '日11', '日12', '日13', '日14'];
         
-        // [改善 4] 所有可能的班別，用於編輯器下拉選單
         const ALL_SHIFTS = [
             'OFF', '1-9', '8-1', '8-5', '8-5$', '8-12', "主8-12'", "$8-12'"
         ];
@@ -280,7 +276,6 @@
         const form = document.getElementById('schedule-form');
         const calendarContainer = document.getElementById('calendar-container');
         const errorMessage = document.getElementById('error-message');
-        // [改善 4] Modal DOM 元素
         const ruleEditorButton = document.getElementById('rule-editor-btn');
         const ruleEditorModal = document.getElementById('rule-editor-modal');
         const closeRuleEditorBtn = document.getElementById('close-rule-editor-btn');
@@ -295,13 +290,10 @@
         const resetConfirmModal = document.getElementById('reset-confirm-modal');
         const confirmResetBtn = document.getElementById('confirm-reset-btn');
         const cancelResetBtn = document.getElementById('cancel-reset-btn');
-        // [修正] 移除 DOM 元素
-        // const resetSettingsBtn = document.getElementById('reset-settings-btn');
 
         
         // --- 核心排班邏輯 (v2.3 更新) ---
         function getMonSatShift(targetDate, params) {
-            // ... (邏輯不變, 但現在讀取 currentMonSatRules) ...
             const dayOfWeek = targetDate.getDay();
             if (dayOfWeek === 0) return { shift: 'N/A', rule: 'N/A' };
             const dayDiffFromMon = (dayOfWeek === 0) ? 6 : (dayOfWeek - 1);
@@ -315,22 +307,16 @@
             const cycleIndex = (anchorIndex + weeksDiff % 12 + 12) % 12;
             const currentRuleCode = MON_SAT_CYCLE[cycleIndex];
             const ruleDayIndex = dayOfWeek - 1; 
-            // [改善 4] 使用 currentMonSatRules
             const shift = currentMonSatRules[currentRuleCode][ruleDayIndex];
             return { shift: shift, rule: currentRuleCode };
         }
 
-        /**
-         * 取得指定日期的週日班別 (v2.3 更新)
-         */
         function getSundayShift(targetDate, params) {
-            // ... (邏輯不變, 但現在讀取 currentSunRules) ...
             if (targetDate.getDay() !== 0) return { shift: 'N/A', rule: 'N/A' };
             let sunAnchorDate = new Date(params.anchorSunDate);
             let sunAnchorRuleName = params.anchorSunType; 
             sunAnchorDate.setHours(0, 0, 0, 0);
             targetDate.setHours(0, 0, 0, 0);
-            // [改善 4] 使用 currentSunRules
             const anchorRuleCode = Object.keys(currentSunRules).find(key => currentSunRules[key] === sunAnchorRuleName);
             if (!anchorRuleCode) return { shift: '錨點錯誤', rule: '錯誤' };
             const anchorIndex = SUN_CYCLE.indexOf(anchorRuleCode);
@@ -338,13 +324,12 @@
             const weeksDiff = Math.round((targetDate.getTime() - sunAnchorDate.getTime()) / MS_PER_WEEK);
             const cycleIndex = (anchorIndex + weeksDiff % 14 + 14) % 14;
             const currentRuleCode = SUN_CYCLE[cycleIndex];
-            // [改善 4] 使用 currentSunRules
             const shift = currentSunRules[currentRuleCode];
             return { shift: shift, rule: currentRuleCode };
         }
 
         /**
-         * 繪製指定月份的月曆 (v2.1 不變)
+         * 繪製指定月份的月曆 (v2.4 視覺調整)
          */
         function renderMonth(year, month, params) {
             const monthName = new Date(year, month).toLocaleString('zh-TW', { month: 'long', year: 'numeric' });
@@ -352,14 +337,17 @@
             const WEEKDAY_NAMES = (startDay === 1) ? WEEKDAY_NAMES_MON : WEEKDAY_NAMES_SUN;
 
             let monthHtml = `
-                <div class="bg-white rounded-lg shadow-lg overflow-hidden">
-                    <h2 class="text-xl font-bold text-slate-900 p-4 bg-slate-50 border-b border-slate-200">${monthName}</h2>
+                <!-- [改善 2] 陰影加深 -->
+                <div class="bg-white rounded-lg shadow-xl overflow-hidden">
+                    <!-- [改善 4] 月份標題加大、padding 增加 -->
+                    <h2 class="text-2xl font-bold text-slate-900 p-5 bg-slate-50 border-b border-slate-200">${monthName}</h2>
                     <div class="grid grid-cols-7 border-b border-slate-200">
             `;
             
             WEEKDAY_NAMES.forEach((day, index) => {
                 const isSunHeader = (startDay === 0 && index === 0) || (startDay === 1 && index === 6);
-                monthHtml += `<div class="p-2 text-center text-sm font-semibold text-slate-600 ${isSunHeader ? 'text-red-500' : ''}">${day}</div>`;
+                // [改善 7] 增加 'weekday-header' class 以便 CSS 控制
+                monthHtml += `<div class="weekday-header p-3 text-center text-xs font-semibold text-slate-500 uppercase tracking-wider ${isSunHeader ? 'text-red-500' : ''}">${day}</div>`;
             });
             monthHtml += `</div><div class="grid grid-cols-7">`;
 
@@ -397,7 +385,7 @@
                     dayClass += ' bg-red-50';
                     dateClass += ' text-red-600';
                 } else {
-                    dayClass += ' bg-white';
+                    dayClass += ' bg-white'; // [改善 5] 確保 hover 效果能觸發
                     dateClass += ' text-slate-800';
                 }
 
@@ -432,7 +420,7 @@
         }
 
         /**
-         * 驗證輸入參數 (v2.1 不變)
+         * 驗證輸入參數
          */
         function validateParams(params) {
             if (params.anchorWeekDate && new Date(params.anchorWeekDate).getDay() !== 1) {
@@ -454,12 +442,11 @@
         }
 
         /**
-         * 處理表dan提交，產生班表 (v2.3 更新)
+         * 處理表dan提交，產生班表
          */
         function generateScheduleFromForm(e) {
             if (e) e.preventDefault();
             
-            // 讀取表單原始值
             const formValues = {
                 displayStartDate: document.getElementById('displayStartDate').value,
                 displayEndDate: document.getElementById('displayEndDate').value,
@@ -470,7 +457,6 @@
                 startDay: document.querySelector('input[name="startDayOfWeek"]:checked').value
             };
             
-            // 轉換為 params 物件 (用於計算)
             const params = {
                 ...formValues,
                 displayStartDate: new Date(formValues.displayStartDate + '-01T00:00:00'),
@@ -488,13 +474,11 @@
                 return;
             }
 
-            // [改善 1] 驗證通過，儲存設定
             try {
                 localStorage.setItem('scheduleSettings', JSON.stringify(formValues));
             } catch (e) {
                 console.error("Failed to save settings:", e);
             }
-
 
             errorMessage.classList.add('hidden');
             calendarContainer.innerHTML = '';
@@ -511,7 +495,7 @@
          */
         function populateSelects() {
             const select = document.getElementById('anchorWeekCode');
-            select.innerHTML = ''; // 清空
+            select.innerHTML = ''; 
             MON_SAT_CYCLE.forEach(code => {
                 const option = document.createElement('option');
                 option.value = code;
@@ -520,7 +504,9 @@
             });
         }
         
-        // --- [改善 1] 儲存與載入設定 ---
+        /**
+         * 載入設定
+         */
         function loadSettings() {
             const savedSettings = localStorage.getItem('scheduleSettings');
             if (!savedSettings) return;
@@ -539,40 +525,28 @@
 
             } catch (e) {
                 console.error("Failed to load settings:", e);
-                localStorage.removeItem('scheduleSettings'); // 清除損壞的資料
+                localStorage.removeItem('scheduleSettings'); 
             }
         }
         
-        // [修正] 移除 resetSettings 函式
-        // --- [改善 2] 重設錨點設定函式 ---
-        // function resetSettings() { ... }
-
-        // --- [改善 4] 規則編輯器相關函式 ---
+        // --- 規則編輯器相關函式 ---
         
-        /**
-         * 儲存目前規則到 localStorage
-         */
         function saveRules() {
             try {
                 localStorage.setItem('customMonSatRules', JSON.stringify(currentMonSatRules));
                 localStorage.setItem('customSunRules', JSON.stringify(currentSunRules));
                 console.log("Rules saved to localStorage.");
-                // 儲存後，重新產生班表
                 generateScheduleFromForm(null); 
             } catch (e) {
                 console.error("Failed to save rules:", e);
             }
         }
 
-        /**
-         * 從 localStorage 載入規則，若無則使用預設值
-         */
         function loadRules() {
             const savedMonSat = localStorage.getItem('customMonSatRules');
             const savedSun = localStorage.getItem('customSunRules');
 
             try {
-                // 使用 JSON.parse(JSON.stringify(...)) 來建立深層複製，避免修改預設值
                 currentMonSatRules = savedMonSat ? JSON.parse(savedMonSat) : JSON.parse(JSON.stringify(DEFAULT_MON_SAT_RULES));
             } catch (e) {
                 console.error("Failed to load Mon-Sat rules, using defaults.", e);
@@ -588,9 +562,6 @@
              console.log("Rules loaded.");
         }
 
-        /**
-         * 產生班別下拉選單的 HTML
-         */
         function createShiftSelect(id, selectedValue) {
             let optionsHtml = ALL_SHIFTS.map(shift => 
                 `<option value="${shift}" ${shift === selectedValue ? 'selected' : ''}>${shift}</option>`
@@ -600,19 +571,14 @@
                     </select>`;
         }
 
-        /**
-         * 填充規則編輯器
-         */
         function populateRuleEditor() {
-            // 1. 填充週一至六
-            // [改善 1] 調整 grid-cols-7 -> grid-cols-[auto_repeat(6,1fr)] 並縮小 gap-2 -> gap-x-2 gap-y-2
+            // 填充週一至六
             let monSatHtml = `
                 <div class="grid grid-cols-[auto_repeat(6,1fr)] gap-x-2 items-center font-semibold mb-2 text-sm text-center sticky top-0 bg-white py-2">
                     <div>代號</div><div>一</div><div>二</div><div>三</div><div>四</div><div>五</div><div>六</div>
                 </div>`;
             MON_SAT_CYCLE.forEach(ruleCode => {
                 const rule = currentMonSatRules[ruleCode];
-                // [改善 1] 調整 grid-cols-7 -> grid-cols-[auto_repeat(6,1fr)] 並縮小 gap-2 -> gap-x-2 gap-y-2
                 monSatHtml += `<div class="grid grid-cols-[auto_repeat(6,1fr)] gap-x-2 gap-y-2 items-center mb-2">`;
                 monSatHtml += `<div class="font-bold text-center text-indigo-700">${ruleCode}</div>`; // Rule Code
                 for (let i = 0; i < 6; i++) {
@@ -623,7 +589,7 @@
             });
             monSatEditorContainer.innerHTML = monSatHtml;
             
-            // 2. 填充週日
+            // 填充週日
             let sunHtml = `<div class="grid grid-cols-3 gap-x-4 gap-y-3 items-center max-w-sm mx-auto">`;
             SUN_CYCLE.forEach(ruleCode => {
                 const shift = currentSunRules[ruleCode];
@@ -634,12 +600,9 @@
             sunEditorContainer.innerHTML = sunHtml;
         }
 
-        /**
-         * 從編輯器讀取值並儲存
-         */
         function saveRulesFromEditor() {
             try {
-                // 1. 讀取週一至六
+                // 讀取週一至六
                 MON_SAT_CYCLE.forEach(ruleCode => {
                     for (let i = 0; i < 6; i++) {
                         const selectId = `ms-${ruleCode}-${i}`;
@@ -650,7 +613,7 @@
                     }
                 });
 
-                // 2. 讀取週日
+                // 讀取週日
                 SUN_CYCLE.forEach(ruleCode => {
                     const selectId = `sun-${ruleCode}`;
                     const select = document.getElementById(selectId);
@@ -659,21 +622,13 @@
                     }
                 });
 
-                // 3. 儲存到 localStorage
                 saveRules();
-                
-                // 4. 關閉 modal
                 ruleEditorModal.classList.add('hidden');
-
             } catch (e) {
                 console.error("Error saving rules:", e);
-                // D...
             }
         }
         
-        /**
-         * 處理編輯器 Tabbing
-         */
         function setupTabs() {
             tabMonSat.addEventListener('click', () => {
                 tabContentMonSat.classList.remove('hidden');
@@ -693,32 +648,22 @@
             });
         }
 
-
         // --- 頁面載入時初始化 ---
         window.onload = () => {
-            // 1. 填充靜態下拉選單
             populateSelects(); 
-            // 2. 載入自訂規則 (或預設規則)
             loadRules(); 
-            // 3. 載入上次的表單設定
             loadSettings(); 
-            // 4. 設定 Tabbing
             setupTabs();
             
-            // 5. 綁定事件監聽
             form.addEventListener('submit', generateScheduleFromForm);
-            // [修正] 移除重設錨點按鈕的事件監聽
-            // resetSettingsBtn.addEventListener('click', resetSettings);
             
-            // -- 規則編輯器 Modal 事件 --
             ruleEditorButton.addEventListener('click', () => {
-                 populateRuleEditor(); // 每次打開時都重新填充
+                 populateRuleEditor(); 
                  ruleEditorModal.classList.remove('hidden'); 
             });
             closeRuleEditorBtn.addEventListener('click', () => { ruleEditorModal.classList.add('hidden'); });
             saveRulesBtn.addEventListener('click', saveRulesFromEditor);
             
-            // -- 重設確認 Modal 事件 --
             resetRulesBtn.addEventListener('click', () => {
                 resetConfirmModal.classList.remove('hidden');
             });
@@ -728,18 +673,16 @@
             confirmResetBtn.addEventListener('click', () => {
                 localStorage.removeItem('customMonSatRules');
                 localStorage.removeItem('customSunRules');
-                loadRules(); // 載入預設值
-                populateRuleEditor(); // 重新填充編輯器
-                generateScheduleFromForm(null); // 重新整理班表
+                loadRules(); 
+                populateRuleEditor(); 
+                generateScheduleFromForm(null); 
                 resetConfirmModal.classList.add('hidden');
             });
             
-            // 6. 初始產生班表
             generateScheduleFromForm(null); 
         };
 
     </script>
 </body>
 </html>
-
 
