@@ -29,6 +29,9 @@
         }
         .modal-content {
             max-height: 80vh; /* 限制 modal 高度 */
+            /* [改善] 確保 modal-content 使用 flex 佈局來固定頁尾 */
+            display: flex;
+            flex-direction: column;
         }
     </style>
 </head>
@@ -146,7 +149,8 @@
 
     <!-- [改善 4] 規則編輯器 Modal -->
     <div id="rule-editor-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden modal-backdrop">
-        <div class="modal-content bg-white rounded-lg shadow-xl w-full max-w-3xl overflow-hidden">
+        <!-- [改善] 移除 overflow-hidden，改由 modal-content 的 flex 佈局控制 -->
+        <div class="modal-content bg-white rounded-lg shadow-xl w-full max-w-3xl">
             <!-- Modal Header -->
             <div class="flex justify-between items-center p-4 border-b border-slate-200">
                 <h3 class="text-xl font-bold text-slate-900">編輯班別規則</h3>
@@ -154,7 +158,8 @@
             </div>
             
             <!-- Modal Body -->
-            <div class="p-6 overflow-y-auto">
+            <!-- [改善] 新增 flex-grow 讓此區塊填滿可用空間，並獨立滾動 -->
+            <div class="p-6 overflow-y-auto flex-grow">
                 <!-- Tabs -->
                 <div class="mb-4 border-b border-slate-200">
                     <!-- [改善 1] 縮小頁籤間距 space-x-8 -> space-x-6 -->
@@ -736,4 +741,5 @@
     </script>
 </body>
 </html>
+
 
