@@ -77,13 +77,16 @@
                     </fieldset>
 
                     <fieldset class="space-y-3">
-                        <legend class="text-lg font-semibold text-indigo-700 mb-2">3. 週一至週六錨點</legend>
+                        <!-- [改善] 標題變更 -->
+                        <legend class="text-lg font-semibold text-indigo-700 mb-2">3. 週一定錨</legend>
                         <div>
-                            <label for="anchorWeekDate" class="block text-sm font-medium text-slate-700">任一週一的日期</label>
+                             <!-- [改善 3] "週一" 變色 (indigo -> blue) -->
+                            <label for="anchorWeekDate" class="block text-sm font-medium text-slate-700">任一<span class="font-semibold text-blue-700">週一</span>的日期</label>
                             <input type="date" id="anchorWeekDate" value="2025-12-01" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-base p-2">
                         </div>
                         <div>
-                            <label for="anchorWeekCode" class="block text-sm font-medium text-slate-700">該週一的班別代號</label>
+                             <!-- [改善 3] "週一" 變色 (indigo -> blue) -->
+                            <label for="anchorWeekCode" class="block text-sm font-medium text-slate-700">該<span class="font-semibold text-blue-700">週一</span>的班別代號</label>
                             <select id="anchorWeekCode" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-base p-2">
                                 <!-- JS 動態填入 -->
                             </select>
@@ -119,6 +122,11 @@
                     <button type="button" id="rule-editor-btn" class="w-full bg-slate-600 text-white font-semibold py-3 px-4 rounded-md shadow-sm hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 text-base mt-4">
                         編輯班別規則
                     </button>
+                    
+                    <!-- [修正] 移除 "重設錨點設定" 按鈕 -->
+                    <!-- <button type="button" id="reset-settings-btn" class="w-full bg-white text-slate-700 border border-slate-300 font-semibold py-3 px-4 rounded-md shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 text-base mt-4">
+                        重設錨點設定
+                    </button> -->
 
                     <div id="error-message" class="text-sm text-red-600 font-medium hidden"></div>
                 </form>
@@ -147,7 +155,8 @@
             <div class="p-6 overflow-y-auto">
                 <!-- Tabs -->
                 <div class="mb-4 border-b border-slate-200">
-                    <nav class="-mb-px flex space-x-8" aria-label="Tabs">
+                    <!-- [改善 1] 縮小頁籤間距 space-x-8 -> space-x-6 -->
+                    <nav class="-mb-px flex space-x-6" aria-label="Tabs">
                         <button id="tab-mon-sat" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm text-indigo-600 border-indigo-500">
                             週一至六規則 (12週循環)
                         </button>
@@ -279,6 +288,8 @@
         const resetConfirmModal = document.getElementById('reset-confirm-modal');
         const confirmResetBtn = document.getElementById('confirm-reset-btn');
         const cancelResetBtn = document.getElementById('cancel-reset-btn');
+        // [修正] 移除 DOM 元素
+        // const resetSettingsBtn = document.getElementById('reset-settings-btn');
 
         
         // --- 核心排班邏輯 (v2.3 更新) ---
@@ -418,10 +429,10 @@
          */
         function validateParams(params) {
             if (params.anchorWeekDate && new Date(params.anchorWeekDate).getDay() !== 1) {
-                return "週一至週六錨點錯誤： 您選擇的日期必須是週一。";
+                return "週一定錨錯誤： 您選擇的日期必須是週一。";
             }
             if (!params.anchorWeekDate || !params.anchorWeekCode) {
-                return "週一至週六錨點錯誤： 請同時提供日期和班別代號。";
+                return "週一定錨錯誤： 請同時提供日期和班別代號。";
             }
             if (params.anchorSunDate && new Date(params.anchorSunDate).getDay() !== 0) {
                 return "週日錨點錯誤： 您選擇的日期必須是週日。";
@@ -436,7 +447,7 @@
         }
 
         /**
-         * 處理表單提交，產生班表 (v2.3 更新)
+         * 處理表dan提交，產生班表 (v2.3 更新)
          */
         function generateScheduleFromForm(e) {
             if (e) e.preventDefault();
@@ -525,6 +536,10 @@
             }
         }
         
+        // [修正] 移除 resetSettings 函式
+        // --- [改善 2] 重設錨點設定函式 ---
+        // function resetSettings() { ... }
+
         // --- [改善 4] 規則編輯器相關函式 ---
         
         /**
@@ -583,13 +598,15 @@
          */
         function populateRuleEditor() {
             // 1. 填充週一至六
+            // [改善 1] 調整 grid-cols-7 -> grid-cols-[auto_repeat(6,1fr)] 並縮小 gap-2 -> gap-x-2 gap-y-2
             let monSatHtml = `
-                <div class="grid grid-cols-7 gap-2 items-center font-semibold mb-2 text-sm text-center sticky top-0 bg-white py-2">
+                <div class="grid grid-cols-[auto_repeat(6,1fr)] gap-x-2 items-center font-semibold mb-2 text-sm text-center sticky top-0 bg-white py-2">
                     <div>代號</div><div>一</div><div>二</div><div>三</div><div>四</div><div>五</div><div>六</div>
                 </div>`;
             MON_SAT_CYCLE.forEach(ruleCode => {
                 const rule = currentMonSatRules[ruleCode];
-                monSatHtml += `<div class="grid grid-cols-7 gap-2 items-center mb-2">`;
+                // [改善 1] 調整 grid-cols-7 -> grid-cols-[auto_repeat(6,1fr)] 並縮小 gap-2 -> gap-x-2 gap-y-2
+                monSatHtml += `<div class="grid grid-cols-[auto_repeat(6,1fr)] gap-x-2 gap-y-2 items-center mb-2">`;
                 monSatHtml += `<div class="font-bold text-center text-indigo-700">${ruleCode}</div>`; // Rule Code
                 for (let i = 0; i < 6; i++) {
                     const shift = rule[i];
@@ -683,6 +700,8 @@
             
             // 5. 綁定事件監聽
             form.addEventListener('submit', generateScheduleFromForm);
+            // [修正] 移除重設錨點按鈕的事件監聽
+            // resetSettingsBtn.addEventListener('click', resetSettings);
             
             // -- 規則編輯器 Modal 事件 --
             ruleEditorButton.addEventListener('click', () => {
@@ -715,4 +734,6 @@
     </script>
 </body>
 </html>
+
+
 
